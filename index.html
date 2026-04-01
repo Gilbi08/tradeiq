@@ -1,0 +1,2068 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>TradeIQ – Dein Trading Journal</title>
+<meta name="theme-color" content="#0a0a0f">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #06060d;
+  --bg2: #0e0e1a;
+  --bg3: #13131f;
+  --card: #111120;
+  --border: #1e1e32;
+  --accent: #00e5a0;
+  --accent2: #7c3aed;
+  --accent3: #f59e0b;
+  --red: #ff4560;
+  --green: #00e5a0;
+  --text: #e8e8f0;
+  --muted: #6b6b8a;
+  --radius: 14px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Outfit', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg2); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* ── PAGES ── */
+.page { display: none; min-height: 100vh; }
+.page.active { display: block; }
+
+/* ══════════════════════════════
+   LANDING PAGE
+══════════════════════════════ */
+#landing {
+  background: var(--bg);
+  position: relative;
+  overflow: hidden;
+}
+
+.grid-bg {
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(0,229,160,.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,229,160,.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.glow-orb {
+  position: fixed;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  filter: blur(80px);
+}
+.glow-orb-1 { width: 500px; height: 500px; background: rgba(0,229,160,.07); top: -150px; right: -100px; }
+.glow-orb-2 { width: 400px; height: 400px; background: rgba(124,58,237,.06); bottom: 100px; left: -100px; }
+
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 40px;
+  border-bottom: 1px solid rgba(255,255,255,.05);
+  backdrop-filter: blur(20px);
+  background: rgba(6,6,13,.8);
+}
+
+.logo {
+  font-size: 1.4rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: var(--text);
+}
+.logo span { color: var(--accent); }
+
+.nav-actions { display: flex; gap: 12px; align-items: center; }
+
+.btn {
+  padding: 10px 22px;
+  border-radius: 50px;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 600;
+  font-size: .85rem;
+  cursor: pointer;
+  border: none;
+  transition: all .2s;
+  letter-spacing: .3px;
+}
+.btn-ghost {
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid var(--border);
+}
+.btn-ghost:hover { color: var(--text); border-color: var(--accent); }
+
+.btn-primary {
+  background: var(--accent);
+  color: #000;
+  box-shadow: 0 0 24px rgba(0,229,160,.25);
+}
+.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 0 36px rgba(0,229,160,.35); }
+
+.btn-lg { padding: 16px 36px; font-size: 1rem; }
+
+/* HERO */
+.hero {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 160px 24px 100px;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  border: 1px solid rgba(0,229,160,.3);
+  border-radius: 50px;
+  font-size: .75rem;
+  color: var(--accent);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 32px;
+  background: rgba(0,229,160,.06);
+}
+
+.hero h1 {
+  font-size: clamp(2.4rem, 5.5vw, 4.2rem);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.5px;
+  max-width: 820px;
+  margin-bottom: 24px;
+}
+
+/* BIOGRAPHY */
+.bio-section {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto 80px;
+  padding: 0 40px;
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 32px;
+  align-items: start;
+}
+
+.bio-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 36px;
+  position: relative;
+  overflow: hidden;
+}
+.bio-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+}
+
+.bio-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.bio-photo {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center top;
+  border: 2px solid var(--accent);
+  flex-shrink: 0;
+}
+
+.bio-name {
+  font-size: 1.1rem;
+  font-weight: 800;
+  margin-bottom: 2px;
+}
+
+.bio-meta {
+  font-size: .75rem;
+  color: var(--accent);
+  letter-spacing: .5px;
+}
+
+.bio-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(0,229,160,.08);
+  border: 1px solid rgba(0,229,160,.2);
+  border-radius: 50px;
+  padding: 4px 12px;
+  font-size: .7rem;
+  color: var(--accent);
+  letter-spacing: .5px;
+  margin-bottom: 16px;
+  font-family: 'Space Mono', monospace;
+}
+
+.bio-text {
+  font-size: .875rem;
+  color: var(--muted);
+  line-height: 1.75;
+}
+
+.bio-stats {
+  display: flex;
+  gap: 20px;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
+
+.bio-stat {
+  text-align: center;
+}
+
+.bio-stat-num {
+  font-size: 1.2rem;
+  font-weight: 800;
+  font-family: 'Space Mono', monospace;
+  color: var(--accent);
+}
+
+.bio-stat-label {
+  font-size: .65rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .8px;
+  margin-top: 2px;
+}
+
+@media (max-width: 900px) {
+  .bio-section { grid-template-columns: 1fr; padding: 0 20px; }
+}
+
+.hero h1 .highlight {
+  color: var(--accent);
+  position: relative;
+}
+
+.hero p {
+  font-size: 1.1rem;
+  color: var(--muted);
+  max-width: 540px;
+  line-height: 1.7;
+  margin-bottom: 48px;
+  font-weight: 400;
+}
+
+.hero-cta { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
+
+.stats-bar {
+  display: flex;
+  gap: 48px;
+  margin-top: 80px;
+  padding-top: 48px;
+  border-top: 1px solid var(--border);
+}
+.stat-item { text-align: center; }
+.stat-num { font-size: 2rem; font-weight: 800; color: var(--accent); font-family: 'Space Mono', monospace; }
+.stat-label { font-size: .75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
+
+/* FEATURES */
+.section {
+  position: relative;
+  z-index: 1;
+  padding: 100px 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.section-label {
+  font-size: .7rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 16px;
+  font-family: 'Space Mono', monospace;
+}
+
+.section-title {
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  font-weight: 800;
+  letter-spacing: -1px;
+  margin-bottom: 56px;
+  line-height: 1.1;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.feat-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 32px;
+  transition: all .3s;
+  position: relative;
+  overflow: hidden;
+}
+.feat-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(0,229,160,.04), transparent);
+  opacity: 0;
+  transition: opacity .3s;
+}
+.feat-card:hover { border-color: rgba(0,229,160,.3); transform: translateY(-4px); }
+.feat-card:hover::before { opacity: 1; }
+
+.feat-icon {
+  width: 48px; height: 48px;
+  border-radius: 12px;
+  background: rgba(0,229,160,.1);
+  border: 1px solid rgba(0,229,160,.2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem;
+  margin-bottom: 20px;
+}
+
+.feat-card h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 10px; }
+.feat-card p { font-size: .88rem; color: var(--muted); line-height: 1.65; }
+
+/* PRICING */
+.pricing-wrapper {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.price-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 40px 36px;
+  width: 340px;
+  position: relative;
+  overflow: hidden;
+}
+
+.price-card.featured {
+  border-color: var(--accent);
+  background: linear-gradient(135deg, rgba(0,229,160,.06), var(--card));
+}
+
+.price-card.featured::after {
+  content: 'BELIEBT';
+  position: absolute;
+  top: 20px; right: -30px;
+  background: var(--accent);
+  color: #000;
+  font-size: .65rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  padding: 4px 36px;
+  transform: rotate(40deg);
+}
+
+.price-badge {
+  font-size: .7rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+
+.price-amount {
+  font-size: 3rem;
+  font-weight: 800;
+  font-family: 'Space Mono', monospace;
+  color: var(--text);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.price-amount sup { font-size: 1.2rem; vertical-align: top; margin-top: 8px; margin-right: 2px; color: var(--muted); }
+.price-sub { font-size: .8rem; color: var(--muted); margin-bottom: 32px; }
+
+.price-features { list-style: none; margin-bottom: 32px; }
+.price-features li {
+  display: flex; align-items: center; gap: 10px;
+  font-size: .88rem;
+  color: var(--muted);
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255,255,255,.04);
+}
+.price-features li .check { color: var(--accent); font-weight: 700; }
+
+/* PREVIEW SCREENSHOT */
+.app-preview {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  overflow: hidden;
+  max-width: 900px;
+  margin: 0 auto 100px;
+  position: relative;
+  z-index: 1;
+  box-shadow: 0 40px 120px rgba(0,0,0,.6);
+}
+
+.preview-bar {
+  background: var(--bg3);
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid var(--border);
+}
+.dot { width: 10px; height: 10px; border-radius: 50%; }
+.dot-r { background: #ff4560; }
+.dot-y { background: #f59e0b; }
+.dot-g { background: #00e5a0; }
+.preview-url {
+  flex: 1;
+  background: var(--border);
+  border-radius: 6px;
+  padding: 5px 14px;
+  font-size: .75rem;
+  color: var(--muted);
+  font-family: 'Space Mono', monospace;
+  margin: 0 16px;
+}
+
+.preview-body { padding: 28px; }
+.preview-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-bottom: 20px;
+}
+.p-stat {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+}
+.p-stat-label { font-size: .65rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+.p-stat-val { font-size: 1.3rem; font-weight: 700; font-family: 'Space Mono', monospace; }
+.green { color: var(--green); }
+.red { color: var(--red); }
+
+.preview-table {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.p-th, .p-td {
+  padding: 10px 14px;
+  font-size: .75rem;
+  font-family: 'Space Mono', monospace;
+}
+.p-th { color: var(--muted); background: rgba(0,0,0,.2); font-size: .65rem; letter-spacing: 1px; text-transform: uppercase; }
+.p-row { border-top: 1px solid var(--border); display: grid; grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr; }
+.p-head { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr; }
+
+/* FOOTER */
+footer {
+  position: relative; z-index: 1;
+  text-align: center;
+  padding: 48px 24px;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  font-size: .82rem;
+}
+
+/* ══════════════════════════════
+   AUTH MODAL
+══════════════════════════════ */
+.modal-overlay {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.8);
+  backdrop-filter: blur(10px);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+}
+.modal-overlay.show { display: flex; }
+
+.modal {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 48px 40px;
+  width: 100%;
+  max-width: 440px;
+  position: relative;
+  animation: slideUp .3s ease;
+}
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.modal-close {
+  position: absolute; top: 20px; right: 20px;
+  background: none; border: none; color: var(--muted);
+  font-size: 1.4rem; cursor: pointer; line-height: 1;
+  transition: color .2s;
+}
+.modal-close:hover { color: var(--text); }
+
+.modal h2 { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 8px; }
+.modal p { color: var(--muted); font-size: .88rem; margin-bottom: 32px; }
+
+.form-group { margin-bottom: 16px; }
+.form-group label {
+  display: block;
+  font-size: .75rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+.form-group input, .form-group select, .form-group textarea {
+  width: 100%;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 13px 16px;
+  color: var(--text);
+  font-family: 'Outfit', sans-serif;
+  font-size: .9rem;
+  transition: border-color .2s;
+  outline: none;
+}
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+  border-color: var(--accent);
+}
+.form-group select option { background: var(--bg3); }
+
+.modal-divider {
+  text-align: center;
+  position: relative;
+  margin: 20px 0;
+  color: var(--muted);
+  font-size: .8rem;
+}
+.modal-divider::before, .modal-divider::after {
+  content: ''; position: absolute;
+  top: 50%; width: 40%; height: 1px;
+  background: var(--border);
+}
+.modal-divider::before { left: 0; }
+.modal-divider::after { right: 0; }
+
+.full-btn {
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: .95rem;
+  cursor: pointer;
+  border: none;
+  transition: all .2s;
+  margin-top: 4px;
+}
+.full-btn-primary {
+  background: var(--accent);
+  color: #000;
+}
+.full-btn-primary:hover { opacity: .9; }
+
+.plan-box {
+  background: var(--bg3);
+  border: 1px solid var(--accent);
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.plan-name { font-weight: 700; }
+.plan-price { font-family: 'Space Mono', monospace; color: var(--accent); font-size: 1.1rem; }
+
+/* ══════════════════════════════
+   APP DASHBOARD
+══════════════════════════════ */
+#app {
+  display: none;
+  min-height: 100vh;
+  background: var(--bg);
+}
+#app.active { display: flex; }
+
+.sidebar {
+  width: 240px;
+  min-height: 100vh;
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  padding: 24px 16px;
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-logo {
+  font-size: 1.2rem;
+  font-weight: 800;
+  padding: 8px 12px 24px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 20px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  font-size: .88rem;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all .2s;
+  margin-bottom: 4px;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+}
+.nav-item:hover { background: var(--bg3); color: var(--text); }
+.nav-item.active { background: rgba(0,229,160,.1); color: var(--accent); }
+.nav-icon { font-size: 1rem; width: 20px; text-align: center; }
+
+.sidebar-bottom {
+  margin-top: auto;
+  border-top: 1px solid var(--border);
+  padding-top: 16px;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--bg3);
+}
+.avatar {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700;
+  font-size: .85rem;
+  color: #000;
+  flex-shrink: 0;
+}
+.user-name { font-size: .82rem; font-weight: 600; }
+.user-plan { font-size: .68rem; color: var(--accent); }
+
+/* MAIN CONTENT */
+.main-content {
+  margin-left: 240px;
+  flex: 1;
+  min-height: 100vh;
+  padding: 32px;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+}
+.page-title { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.5px; }
+.page-subtitle { font-size: .85rem; color: var(--muted); margin-top: 2px; }
+
+/* DASHBOARD VIEWS */
+.dash-view { display: none; }
+.dash-view.active { display: block; }
+
+/* METRIC CARDS */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.metric-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color .2s;
+}
+.metric-card:hover { border-color: rgba(0,229,160,.25); }
+
+.metric-label {
+  font-size: .7rem;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 10px;
+  display: flex; align-items: center; gap: 6px;
+}
+.metric-value {
+  font-size: 1.8rem;
+  font-weight: 800;
+  font-family: 'Space Mono', monospace;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+.metric-change {
+  font-size: .75rem;
+  font-family: 'Space Mono', monospace;
+}
+.up { color: var(--green); }
+.down { color: var(--red); }
+.neutral { color: var(--muted); }
+
+/* TRADES TABLE */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.card-header {
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.card-title { font-size: 1rem; font-weight: 700; }
+
+.trades-table { width: 100%; border-collapse: collapse; }
+.trades-table th {
+  padding: 12px 16px;
+  font-size: .68rem;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: rgba(0,0,0,.2);
+  text-align: left;
+  font-family: 'Space Mono', monospace;
+  border-bottom: 1px solid var(--border);
+}
+.trades-table td {
+  padding: 14px 16px;
+  font-size: .85rem;
+  border-bottom: 1px solid rgba(255,255,255,.04);
+  font-family: 'Space Mono', monospace;
+}
+.trades-table tr:hover td { background: rgba(255,255,255,.02); }
+.trades-table tr:last-child td { border-bottom: none; }
+
+.badge {
+  padding: 3px 10px;
+  border-radius: 50px;
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .5px;
+}
+.badge-long { background: rgba(0,229,160,.12); color: var(--green); }
+.badge-short { background: rgba(255,69,96,.12); color: var(--red); }
+.badge-win { background: rgba(0,229,160,.15); color: var(--green); }
+.badge-loss { background: rgba(255,69,96,.15); color: var(--red); }
+.badge-open { background: rgba(245,158,11,.12); color: var(--accent3); }
+
+/* ADD TRADE FORM */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+
+.form-section {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px;
+  margin-bottom: 20px;
+}
+.form-section-title {
+  font-size: .75rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 20px;
+  font-family: 'Space Mono', monospace;
+}
+
+.rr-display {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+  text-align: center;
+}
+.rr-num {
+  font-size: 2.5rem;
+  font-weight: 800;
+  font-family: 'Space Mono', monospace;
+  color: var(--accent);
+}
+.rr-label { font-size: .7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+
+/* AI TIPS */
+.ai-tip {
+  background: linear-gradient(135deg, rgba(124,58,237,.12), rgba(0,229,160,.06));
+  border: 1px solid rgba(124,58,237,.3);
+  border-radius: var(--radius);
+  padding: 20px 24px;
+  margin-bottom: 16px;
+  position: relative;
+  overflow: hidden;
+}
+.ai-tip::before {
+  content: '✦';
+  position: absolute; top: 18px; right: 20px;
+  color: var(--accent2); opacity: .4; font-size: 1.2rem;
+}
+.ai-tip-tag {
+  font-size: .65rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--accent2);
+  font-family: 'Space Mono', monospace;
+  margin-bottom: 8px;
+}
+.ai-tip h4 { font-size: .95rem; font-weight: 700; margin-bottom: 6px; }
+.ai-tip p { font-size: .83rem; color: var(--muted); line-height: 1.6; }
+
+/* STATS PAGE */
+.chart-placeholder {
+  background: var(--bg3);
+  border-radius: 10px;
+  height: 200px;
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  padding: 16px;
+  overflow: hidden;
+}
+.bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.bar { width: 100%; border-radius: 4px 4px 0 0; transition: height .3s; }
+.bar-label { font-size: .55rem; color: var(--muted); font-family: 'Space Mono', monospace; }
+
+/* SETTINGS */
+.settings-section {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+.settings-header {
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border);
+}
+.settings-row {
+  padding: 18px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255,255,255,.04);
+}
+.settings-row:last-child { border-bottom: none; }
+.settings-label { font-size: .88rem; font-weight: 600; }
+.settings-desc { font-size: .78rem; color: var(--muted); margin-top: 2px; }
+
+/* TOAST */
+.toast {
+  position: fixed;
+  bottom: 32px; right: 32px;
+  background: var(--bg2);
+  border: 1px solid var(--accent);
+  border-radius: 12px;
+  padding: 14px 20px;
+  font-size: .85rem;
+  color: var(--text);
+  z-index: 9999;
+  transform: translateY(80px);
+  transition: transform .3s;
+  display: flex; align-items: center; gap: 10px;
+}
+.toast.show { transform: translateY(0); }
+
+/* MOBILE HAMBURGER */
+.ham { display: none; background: none; border: none; color: var(--text); font-size: 1.4rem; cursor: pointer; }
+
+@media (max-width: 768px) {
+  .sidebar { transform: translateX(-100%); transition: transform .3s; }
+  .sidebar.open { transform: translateX(0); }
+  .main-content { margin-left: 0; padding: 20px 16px; }
+  .ham { display: block; }
+  .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+  .two-col, .three-col { grid-template-columns: 1fr; }
+  nav { padding: 14px 20px; }
+  .hero { padding: 120px 20px 60px; }
+  .stats-bar { gap: 28px; }
+  .preview-stats { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* ── UPGRADE WALL ── */
+.upgrade-wall {
+  background: rgba(0,0,0,.7);
+  border-radius: var(--radius);
+  border: 1px solid rgba(124,58,237,.3);
+  padding: 60px 40px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  margin-top: 20px;
+}
+.upgrade-wall::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(124,58,237,.08), rgba(0,229,160,.05));
+}
+.upgrade-wall h3 { font-size: 1.4rem; font-weight: 800; margin-bottom: 10px; position: relative; }
+.upgrade-wall p { color: var(--muted); margin-bottom: 24px; position: relative; }
+
+/* PROGRESS BAR */
+.progress-bar-wrap { background: var(--border); border-radius: 50px; height: 6px; overflow: hidden; }
+.progress-bar-fill { height: 100%; border-radius: 50px; background: linear-gradient(90deg, var(--accent), var(--accent2)); transition: width .5s; }
+
+.emoji-btn {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 14px;
+  color: var(--text);
+  cursor: pointer;
+  transition: all .2s;
+  font-size: 1.1rem;
+}
+.emoji-btn:hover, .emoji-btn.selected { border-color: var(--accent); background: rgba(0,229,160,.08); }
+
+.emotion-grid { display: flex; gap: 8px; flex-wrap: wrap; }
+
+</style>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+<div class="glow-orb glow-orb-1"></div>
+<div class="glow-orb glow-orb-2"></div>
+
+<!-- ═══════════════ LANDING PAGE ═══════════════ -->
+<div id="landing" class="page active">
+  <nav>
+    <div class="logo">Trade<span>IQ</span></div>
+    <div class="nav-actions">
+      <button class="btn btn-ghost" onclick="showLogin()">Einloggen</button>
+      <button class="btn btn-primary" onclick="showRegister()">Jetzt starten</button>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-badge">✦ Für ernsthafte Trader</div>
+    <h1>Tracke. Analysiere.<br><span class="highlight">Werde besser.</span></h1>
+    <p>Das professionelle Trading Journal, das dir echtes Feedback gibt – nicht nur Zahlen, sondern konkrete Verbesserungsvorschläge basierend auf deinen Daten.</p>
+    <div class="hero-cta">
+      <button class="btn btn-primary btn-lg" onclick="showRegister()">Jetzt starten – 7,99 €/Monat</button>
+      <button class="btn btn-ghost btn-lg" onclick="scrollToFeatures()">Features ansehen →</button>
+    </div>
+    <div class="stats-bar">
+      <div class="stat-item"><div class="stat-num">94%</div><div class="stat-label">Bessere Win-Rate</div></div>
+      <div class="stat-item"><div class="stat-num">2.4x</div><div class="stat-label">Mehr R:R</div></div>
+      <div class="stat-item"><div class="stat-num">1.2K+</div><div class="stat-label">Aktive Trader</div></div>
+      <div class="stat-item"><div class="stat-num">87K+</div><div class="stat-label">Trades geloggt</div></div>
+    </div>
+  </section>
+
+
+
+
+  <!-- BIOGRAPHY -->
+  <div class="bio-section">
+    <div class="app-preview" style="margin:0;position:relative;z-index:1;box-shadow:0 20px 60px rgba(0,0,0,.5);">
+      <div class="preview-bar">
+        <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+        <div class="preview-url">tradeiq.app/dashboard</div>
+      </div>
+      <div class="preview-body">
+        <div class="preview-stats">
+          <div class="p-stat"><div class="p-stat-label">Gesamt P&L</div><div class="p-stat-val green">+€4.280</div></div>
+          <div class="p-stat"><div class="p-stat-label">Win-Rate</div><div class="p-stat-val">67.4%</div></div>
+          <div class="p-stat"><div class="p-stat-label">Bestes R:R</div><div class="p-stat-val green">3.8R</div></div>
+          <div class="p-stat"><div class="p-stat-label">Trades</div><div class="p-stat-val">142</div></div>
+        </div>
+        <div class="preview-table">
+          <div class="p-head" style="background:rgba(0,0,0,.2);">
+            <div class="p-th">Asset</div><div class="p-th">Setup</div><div class="p-th">Richtung</div><div class="p-th">R:R</div><div class="p-th">Ergebnis</div><div class="p-th">P&L</div>
+          </div>
+          <div class="p-row"><div class="p-td">BTC/USDT</div><div class="p-td">Breakout</div><div class="p-td" style="color:var(--green)">LONG</div><div class="p-td">1:2.5</div><div class="p-td" style="color:var(--green)">WIN</div><div class="p-td" style="color:var(--green)">+€380</div></div>
+          <div class="p-row"><div class="p-td">EUR/USD</div><div class="p-td">Reversal</div><div class="p-td" style="color:var(--red)">SHORT</div><div class="p-td">1:1.8</div><div class="p-td" style="color:var(--red)">LOSS</div><div class="p-td" style="color:var(--red)">-€120</div></div>
+          <div class="p-row"><div class="p-td">AAPL</div><div class="p-td">Trend Follow</div><div class="p-td" style="color:var(--green)">LONG</div><div class="p-td">1:3.2</div><div class="p-td" style="color:var(--green)">WIN</div><div class="p-td" style="color:var(--green)">+€540</div></div>
+          <div class="p-row"><div class="p-td">ETH/USDT</div><div class="p-td">Reversal</div><div class="p-td" style="color:var(--green)">LONG</div><div class="p-td">1:2.1</div><div class="p-td" style="color:var(--green)">WIN</div><div class="p-td" style="color:var(--green)">+€210</div></div>
+          <div class="p-row"><div class="p-td">GBP/USD</div><div class="p-td">Breakout</div><div class="p-td" style="color:var(--red)">SHORT</div><div class="p-td">1:1.5</div><div class="p-td" style="color:var(--red)">LOSS</div><div class="p-td" style="color:var(--red)">-€90</div></div>
+          <div class="p-row"><div class="p-td">NVDA</div><div class="p-td">Trend Follow</div><div class="p-td" style="color:var(--green)">LONG</div><div class="p-td">1:4.0</div><div class="p-td" style="color:var(--green)">WIN</div><div class="p-td" style="color:var(--green)">+€720</div></div>
+          <div class="p-row"><div class="p-td">SOL/USDT</div><div class="p-td">S/R Bounce</div><div class="p-td" style="color:var(--green)">LONG</div><div class="p-td">1:2.8</div><div class="p-td" style="color:var(--green)">WIN</div><div class="p-td" style="color:var(--green)">+€340</div></div>
+          <div class="p-row"><div class="p-td">USD/JPY</div><div class="p-td">EMA Cross</div><div class="p-td" style="color:var(--red)">SHORT</div><div class="p-td">1:1.2</div><div class="p-td" style="color:var(--red)">LOSS</div><div class="p-td" style="color:var(--red)">-€60</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="bio-card">
+      <div class="bio-tag">✦ Gründer &amp; Creator</div>
+      <div class="bio-header">
+        <img class="bio-photo" src="data:image/jpeg;base64,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" alt="Gilbert">
+        <div>
+          <div class="bio-name">Gilbi</div>
+          <div class="bio-meta">Trader · YouTuber · 18 Jahre</div>
+        </div>
+      </div>
+      <p class="bio-text">Mein Name ist Gilbert, ich bin 18 Jahre alt und seit meinem 13. Lebensjahr auf YouTube aktiv. In dieser Zeit habe ich mehrere erfolgreiche Kanäle aufgebaut – darunter <strong style="color:var(--text)">„Gilbi 08"</strong> mit über 8.500 Abonnenten sowie <strong style="color:var(--accent)">„Kühn Capital"</strong> mit über 70.000 Abonnenten.</p>
+      <p class="bio-text" style="margin-top:12px;">Durch meine eigenen Trading-Erfahrungen weiß ich, wie viele Anfänger immer wieder die gleichen Fehler machen. Deshalb habe ich TradeIQ entwickelt – damit du diese Fehler nicht mehr machst und dich kontinuierlich verbesserst.</p>
+      <div class="bio-stats">
+        <div class="bio-stat"><div class="bio-stat-num">70K+</div><div class="bio-stat-label">Abonnenten</div></div>
+        <div class="bio-stat"><div class="bio-stat-num">5 J.</div><div class="bio-stat-label">Trading-Erfahrung</div></div>
+        <div class="bio-stat"><div class="bio-stat-num">2+</div><div class="bio-stat-label">YouTube-Kanäle</div></div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- FEATURES -->
+  <section class="section" id="features">
+    <div class="section-label">// Features</div>
+    <div class="section-title">Alles was du brauchst,<br>um zu wachsen.</div>
+    <div class="features-grid">
+      <div class="feat-card">
+        <div class="feat-icon">📊</div>
+        <h3>Detailliertes Trade-Tracking</h3>
+        <p>Asset, Entry, SL, TP, R:R, Setup-Typ, Timeframe, Emotion, Screenshots – alles an einem Ort. So wie professionelle Trader es machen.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🧠</div>
+        <h3>KI-Verbesserungsvorschläge</h3>
+        <p>TradeIQ analysiert deine Muster und gibt dir konkrete, datenbasierte Tipps wo du Geld verlierst und wie du es stoppen kannst.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">📈</div>
+        <h3>Tiefe Statistiken</h3>
+        <p>Win-Rate nach Setup, Wochentag, Uhrzeit, Asset, Emotion. Finde heraus wann und wo du am profitabelsten bist.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">⚡</div>
+        <h3>Risiko-Management</h3>
+        <p>Automatische R:R-Berechnung, Max-Drawdown Tracking, Positionsgröße – dein Risiko immer im Blick.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🧘</div>
+        <h3>Emotions-Journal</h3>
+        <p>Tracke deinen mentalen Zustand bei jedem Trade. Entdecke ob Fear, Greed oder Overconfidence dein größter Feind ist.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section class="section">
+    <div class="section-label">// Pricing</div>
+    <div class="section-title">Ein fairer Preis.<br>Unbegrenzte Insights.</div>
+    <div class="pricing-wrapper">
+      <div class="price-card featured" style="width:420px;">
+        <div class="price-badge">TradeIQ Pro</div>
+        <div class="price-amount"><sup>€</sup>7<span style="font-size:1.5rem">,99</span></div>
+        <div class="price-sub">pro Monat · jederzeit kündbar</div>
+        <ul class="price-features">
+          <li><span class="check">✓</span> Unbegrenzte Trades</li>
+          <li><span class="check">✓</span> KI-Verbesserungsvorschläge</li>
+          <li><span class="check">✓</span> Alle Statistiken & Charts</li>
+          <li><span class="check">✓</span> Emotions-Tracking</li>
+          <li><span class="check">✓</span> Screenshot-Upload</li>
+          <li><span class="check">✓</span> CSV-Export</li>
+        </ul>
+        <button class="full-btn full-btn-primary" onclick="showRegister()">Jetzt starten →</button>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="logo" style="margin-bottom:12px;">Trade<span>IQ</span></div>
+    <p>© 2025 TradeIQ · Datenschutz · AGB · Kontakt</p>
+  </footer>
+</div>
+
+<!-- ═══════════════ AUTH MODALS ═══════════════ -->
+<div class="modal-overlay" id="registerModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModals()">×</button>
+
+    <!-- STEP 1: Account details -->
+    <div id="regStep1">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
+        <div style="background:var(--accent);color:#000;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;flex-shrink:0;">1</div>
+        <h2 style="font-size:1.4rem;">Konto erstellen</h2>
+      </div>
+      <p>Zuerst deine Daten eingeben, dann zur sicheren Zahlung.</p>
+      <div class="form-group">
+        <label>Name</label>
+        <input type="text" placeholder="Max Mustermann" id="regName">
+      </div>
+      <div class="form-group">
+        <label>E-Mail</label>
+        <input type="email" placeholder="max@example.com" id="regEmail">
+      </div>
+      <div class="form-group">
+        <label>Passwort</label>
+        <input type="password" placeholder="Mindestens 8 Zeichen" id="regPass">
+      </div>
+      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:14px 18px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;">
+        <div style="font-size:.85rem;color:var(--muted);">TradeIQ Pro · monatlich kündbar</div>
+        <div style="font-family:'Space Mono',monospace;color:var(--accent);font-weight:700;">€7,99/Mo</div>
+      </div>
+      <button class="full-btn full-btn-primary" onclick="goToPayment()">Weiter zur Zahlung →</button>
+      <div class="modal-divider">oder</div>
+      <button class="full-btn" style="background:var(--bg3);border:1px solid var(--border);color:var(--text);" onclick="switchToLogin()">Bereits ein Konto? Einloggen</button>
+    </div>
+
+    <!-- STEP 2: Redirect info (shown briefly before Stripe redirect) -->
+    <div id="regStep2" style="display:none;text-align:center;">
+      <div style="font-size:2.5rem;margin-bottom:16px;">🔒</div>
+      <h2 style="font-size:1.3rem;margin-bottom:10px;">Weiterleitung zu Stripe...</h2>
+      <p style="color:var(--muted);font-size:.88rem;margin-bottom:24px;">Du wirst jetzt zur sicheren Zahlungsseite weitergeleitet. Nach der Zahlung kommst du automatisch zurück.</p>
+      <div style="display:flex;gap:8px;justify-content:center;align-items:center;color:var(--muted);font-size:.78rem;">
+        <span>🔐</span><span>256-bit SSL verschlüsselt</span>
+        <span style="margin:0 4px;">·</span>
+        <span>⚡</span><span>Powered by Stripe</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="modal-overlay" id="loginModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModals()">×</button>
+    <h2>Willkommen zurück</h2>
+    <p>Log dich in dein TradeIQ-Konto ein.</p>
+    <div class="form-group">
+      <label>E-Mail</label>
+      <input type="email" placeholder="max@example.com" id="loginEmail">
+    </div>
+    <div class="form-group">
+      <label>Passwort</label>
+      <input type="password" placeholder="Passwort" id="loginPass">
+    </div>
+    <button class="full-btn full-btn-primary" onclick="doLogin()" style="margin-top:8px;">Einloggen →</button>
+    <div class="modal-divider">oder</div>
+    <button class="full-btn" style="background:var(--bg3);border:1px solid var(--border);color:var(--text);" onclick="showRegister()">Neu hier? Konto erstellen</button>
+  </div>
+</div>
+
+<!-- ═══════════════ APP ═══════════════ -->
+<div id="app">
+  <!-- SIDEBAR -->
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-logo">Trade<span style="color:var(--accent)">IQ</span></div>
+    <button class="nav-item active" onclick="showView('dashboard', this)"><span class="nav-icon">⬛</span> Dashboard</button>
+    <button class="nav-item" onclick="showView('trades', this)"><span class="nav-icon">📋</span> Trades</button>
+    <button class="nav-item" onclick="showView('addTrade', this)"><span class="nav-icon">✚</span> Trade hinzufügen</button>
+    <button class="nav-item" onclick="showView('analytics', this)"><span class="nav-icon">📊</span> Statistiken</button>
+    <button class="nav-item" onclick="showView('tips', this)"><span class="nav-icon">🧠</span> KI-Tipps</button>
+    <button class="nav-item" onclick="showView('settings', this)"><span class="nav-icon">⚙</span> Einstellungen</button>
+    <div class="sidebar-bottom">
+      <div class="user-info">
+        <div class="avatar" id="avatarText">M</div>
+        <div><div class="user-name" id="userName">Max T.</div><div class="user-plan">✦ Pro Member</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main-content">
+    <div class="topbar">
+      <div>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <button class="ham" onclick="toggleSidebar()">☰</button>
+          <div>
+            <div class="page-title" id="viewTitle">Dashboard</div>
+            <div class="page-subtitle" id="viewSub">Deine Performance auf einen Blick</div>
+          </div>
+        </div>
+      </div>
+      <button class="btn btn-primary" onclick="showView('addTrade')">+ Trade hinzufügen</button>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div class="dash-view active" id="view-dashboard">
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-label">💰 Gesamt P&L</div>
+          <div class="metric-value up" id="totalPL">+€0</div>
+          <div class="metric-change up" id="plChange">—</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">🎯 Win-Rate</div>
+          <div class="metric-value" id="winRate">0%</div>
+          <div class="metric-change neutral" id="winRateChange">0 Trades</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">⚡ Avg R:R</div>
+          <div class="metric-value" id="avgRR">0R</div>
+          <div class="metric-change neutral">Ziel: >2.0R</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">📉 Max Drawdown</div>
+          <div class="metric-value down" id="maxDD">€0</div>
+          <div class="metric-change neutral">Schlechteste Serie</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">📈 Profit Factor</div>
+          <div class="metric-value" id="profitFactor">0</div>
+          <div class="metric-change neutral">Ziel: >1.5</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">🔢 Trades</div>
+          <div class="metric-value" id="totalTrades">0</div>
+          <div class="metric-change neutral" id="openTrades">0 offen</div>
+        </div>
+      </div>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-bottom:20px;">
+        <div class="card">
+          <div class="card-header"><div class="card-title">P&L Verlauf</div></div>
+          <div style="padding:20px;">
+            <div class="chart-placeholder" id="plChart">
+              <div style="color:var(--muted);font-size:.8rem;width:100%;text-align:center;align-self:center;">Noch keine Trades</div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">Win/Loss Verteilung</div></div>
+          <div style="padding:20px;">
+            <div id="winLossViz" style="display:flex;gap:8px;align-items:flex-end;height:200px;background:var(--bg3);border-radius:10px;padding:20px;justify-content:center;align-items:center;">
+              <div style="color:var(--muted);font-size:.8rem;">Noch keine Trades</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><div class="card-title">Letzte Trades</div><button class="btn btn-ghost" onclick="showView('trades')" style="font-size:.78rem;padding:6px 14px;">Alle ansehen →</button></div>
+        <div id="recentTradesTable"><table class="trades-table"><tr><td colspan="7" style="text-align:center;color:var(--muted);padding:40px;">Noch keine Trades. <span style="color:var(--accent);cursor:pointer;" onclick="showView('addTrade')">Ersten Trade hinzufügen →</span></td></tr></table></div>
+      </div>
+    </div>
+
+    <!-- TRADES LIST -->
+    <div class="dash-view" id="view-trades">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Alle Trades</div>
+          <button class="btn btn-primary" onclick="showView('addTrade')" style="font-size:.78rem;padding:8px 16px;">+ Neuer Trade</button>
+        </div>
+        <div id="allTradesTable"><table class="trades-table"><tr><td colspan="7" style="text-align:center;color:var(--muted);padding:40px;">Noch keine Trades</td></tr></table></div>
+      </div>
+    </div>
+
+    <!-- ADD TRADE -->
+    <div class="dash-view" id="view-addTrade">
+      <div class="form-section">
+        <div class="form-section-title">// Asset & Richtung</div>
+        <div class="two-col">
+          <div class="form-group"><label>Asset / Ticker</label><input type="text" id="t-asset" placeholder="z.B. BTC/USDT, AAPL, EUR/USD"></div>
+          <div class="form-group"><label>Markt</label><select id="t-market"><option>Crypto</option><option>Forex</option><option>Aktien</option><option>Futures</option><option>Optionen</option><option>Rohstoffe</option></select></div>
+        </div>
+        <div class="two-col">
+          <div class="form-group"><label>Richtung</label><select id="t-direction"><option value="LONG">LONG ↑</option><option value="SHORT">SHORT ↓</option></select></div>
+          <div class="form-group"><label>Status</label><select id="t-status"><option value="WIN">Win ✓</option><option value="LOSS">Loss ✗</option><option value="OPEN">Offen</option><option value="BE">Break-Even</option></select></div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">// Preise & Risiko</div>
+        <div class="three-col">
+          <div class="form-group"><label>Entry Preis</label><input type="number" id="t-entry" placeholder="0.00" step="any" oninput="calcRR()"></div>
+          <div class="form-group"><label>Stop-Loss</label><input type="number" id="t-sl" placeholder="0.00" step="any" oninput="calcRR()"></div>
+          <div class="form-group"><label>Take-Profit</label><input type="number" id="t-tp" placeholder="0.00" step="any" oninput="calcRR()"></div>
+        </div>
+        <div class="two-col">
+          <div class="form-group"><label>Positionsgröße (€)</label><input type="number" id="t-size" placeholder="1000" step="any"></div>
+          <div class="form-group"><label>Risiko (€ oder %)</label><input type="number" id="t-risk" placeholder="50" step="any"></div>
+        </div>
+        <div class="two-col">
+          <div class="form-group"><label>P&L Ergebnis (€)</label><input type="number" id="t-pnl" placeholder="z.B. 150 oder -80" step="any"></div>
+          <div class="rr-display">
+            <div class="rr-num" id="rrDisplay">—</div>
+            <div class="rr-label">Risk : Reward</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">// Setup & Kontext</div>
+        <div class="two-col">
+          <div class="form-group"><label>Setup-Typ</label><select id="t-setup">
+            <option>Breakout</option><option>Reversal</option><option>Trend Following</option>
+            <option>Support/Resistance</option><option>EMA Cross</option><option>VWAP</option>
+            <option>Divergenz</option><option>Gap Fill</option><option>Sonstiges</option>
+          </select></div>
+          <div class="form-group"><label>Timeframe</label><select id="t-timeframe">
+            <option>1M</option><option>5M</option><option>15M</option><option>30M</option>
+            <option>1H</option><option>4H</option><option>1D</option><option>1W</option>
+          </select></div>
+        </div>
+        <div class="two-col">
+          <div class="form-group"><label>Datum & Uhrzeit</label><input type="datetime-local" id="t-date"></div>
+          <div class="form-group"><label>Session</label><select id="t-session"><option>London</option><option>New York</option><option>Asian</option><option>Überlappung</option><option>Pre-Market</option><option>After-Hours</option></select></div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">// Mentaler Zustand</div>
+        <div class="form-group"><label>Emotion beim Einstieg</label>
+          <div class="emotion-grid">
+            <button class="emoji-btn" onclick="selectEmotion(this, 'Ruhig')">😌 Ruhig</button>
+            <button class="emoji-btn" onclick="selectEmotion(this, 'Selbstsicher')">💪 Sicher</button>
+            <button class="emoji-btn" onclick="selectEmotion(this, 'Unsicher')">😰 Unsicher</button>
+            <button class="emoji-btn" onclick="selectEmotion(this, 'FOMO')">🏃 FOMO</button>
+            <button class="emoji-btn" onclick="selectEmotion(this, 'Gierig')">🤑 Gierig</button>
+            <button class="emoji-btn" onclick="selectEmotion(this, 'Ängstlich')">😨 Ängstlich</button>
+            <button class="emoji-btn" onclick="selectEmotion(this, 'Übermüdet')">😴 Müde</button>
+            <button class="emoji-btn" onclick="selectEmotion(this, 'Fokussiert')">🎯 Fokus</button>
+          </div>
+        </div>
+        <input type="hidden" id="t-emotion" value="">
+        <div class="form-group" style="margin-top:16px;"><label>Notizen / Trade-Begründung</label>
+          <textarea id="t-notes" rows="4" placeholder="Warum bist du in diesen Trade gegangen? Was hat dein Setup ausgemacht? Was lief gut/schlecht?"></textarea>
+        </div>
+        <div class="form-group">
+          <label>Regelkonform? (Hast du dein Setup-Regelwerk befolgt?)</label>
+          <select id="t-rules">
+            <option value="yes">Ja – alles nach Plan</option>
+            <option value="partial">Teilweise</option>
+            <option value="no">Nein – bin vom Plan abgewichen</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:12px;justify-content:flex-end;">
+        <button class="btn btn-ghost" onclick="showView('trades')">Abbrechen</button>
+        <button class="btn btn-primary btn-lg" onclick="saveTrade()">Trade speichern ✓</button>
+      </div>
+    </div>
+
+    <!-- ANALYTICS -->
+    <div class="dash-view" id="view-analytics">
+      <div class="metrics-grid" style="margin-bottom:28px;">
+        <div class="metric-card"><div class="metric-label">🏆 Best Setup</div><div class="metric-value" style="font-size:1.1rem;" id="bestSetup">—</div><div class="metric-change neutral">Höchste Win-Rate</div></div>
+        <div class="metric-card"><div class="metric-label">💀 Worst Setup</div><div class="metric-value" style="font-size:1.1rem;" id="worstSetup">—</div><div class="metric-change neutral">Niedrigste Win-Rate</div></div>
+        <div class="metric-card"><div class="metric-label">📅 Bester Tag</div><div class="metric-value" style="font-size:1.1rem;" id="bestDay">—</div><div class="metric-change neutral">Höchstes P&L</div></div>
+        <div class="metric-card"><div class="metric-label">😌 Emotion Impact</div><div class="metric-value" style="font-size:1rem;" id="emotionImpact">—</div><div class="metric-change neutral">Bei besten Trades</div></div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;">
+        <div class="card"><div class="card-header"><div class="card-title">Performance nach Setup</div></div>
+          <div style="padding:20px;" id="setupChart"><div style="color:var(--muted);font-size:.85rem;text-align:center;padding:20px;">Keine Daten</div></div>
+        </div>
+        <div class="card"><div class="card-header"><div class="card-title">Win-Rate nach Timeframe</div></div>
+          <div style="padding:20px;" id="tfChart"><div style="color:var(--muted);font-size:.85rem;text-align:center;padding:20px;">Keine Daten</div></div>
+        </div>
+      </div>
+
+      <div class="card"><div class="card-header"><div class="card-title">Regelkonformität vs. Performance</div></div>
+        <div style="padding:24px;" id="rulesChart">
+          <div id="rulesViz">
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;">
+              <div class="rr-display"><div class="rr-num" id="ruleYes">—</div><div class="rr-label">Regelkonform</div></div>
+              <div class="rr-display"><div class="rr-num" id="rulePartial">—</div><div class="rr-label">Teilweise</div></div>
+              <div class="rr-display" style="background:rgba(255,69,96,.08);border-color:rgba(255,69,96,.2);"><div class="rr-num" style="color:var(--red)" id="ruleNo">—</div><div class="rr-label">Regelverstoß</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AI TIPS -->
+    <div class="dash-view" id="view-tips">
+      <div id="aiTipsContainer">
+        <div class="ai-tip">
+          <div class="ai-tip-tag">✦ KI-Analyse</div>
+          <h4>Füge mehr Trades hinzu für personalisierte Tipps</h4>
+          <p>TradeIQ analysiert deine Handelshistorie und gibt dir konkrete Verbesserungsvorschläge. Starte mit mindestens 5 Trades für erste Insights.</p>
+        </div>
+        <div class="ai-tip" style="border-color:rgba(0,229,160,.3);background:linear-gradient(135deg,rgba(0,229,160,.06),var(--card));">
+          <div class="ai-tip-tag" style="color:var(--accent)">✦ Allgemeiner Tipp</div>
+          <h4>Risk : Reward ist dein wichtigstes Werkzeug</h4>
+          <p>Trader die konstant ein R:R von 1:2 oder besser einhalten, können langfristig profitabel sein – selbst mit nur 40% Win-Rate. Tracke das in jedem Trade!</p>
+        </div>
+        <div class="ai-tip" style="border-color:rgba(245,158,11,.3);background:linear-gradient(135deg,rgba(245,158,11,.06),var(--card));">
+          <div class="ai-tip-tag" style="color:var(--accent3)">✦ Psychologie</div>
+          <h4>Emotions-Tracking kann deine Performance um 20-30% verbessern</h4>
+          <p>Studien zeigen: Trader die ihren emotionalen Zustand dokumentieren, erkennen schnell Muster – z.B. schlechtere Performance bei FOMO oder nach Verlusten. Nutze das Emotions-Feld bei jedem Trade.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="dash-view" id="view-settings">
+      <div class="settings-section">
+        <div class="settings-header"><div class="card-title">💳 Abonnement</div></div>
+        <div class="settings-row">
+          <div><div class="settings-label">TradeIQ Pro</div><div class="settings-desc">Aktiv – nächste Zahlung am 1. des nächsten Monats</div></div>
+          <span class="badge badge-win">AKTIV</span>
+        </div>
+        <div class="settings-row">
+          <div><div class="settings-label">Plan: Pro Monthly</div><div class="settings-desc">€7,99 / Monat</div></div>
+          <button class="btn btn-ghost" style="font-size:.78rem;padding:8px 14px;border-color:var(--red);color:var(--red);" onclick="cancelSubscription()">Kündigen</button>
+        </div>
+      </div>
+
+      <div class="settings-section" id="adminPaypalSection" style="display:none;">
+        <div class="settings-header"><div class="card-title">💰 PayPal-Auszahlung (Admin)</div></div>
+        <div class="settings-row">
+          <div><div class="settings-label">PayPal-Adresse hinterlegen</div><div class="settings-desc">Einnahmen-Auszahlung für den Dienst</div></div>
+        </div>
+        <div style="padding:16px 24px;border-top:1px solid var(--border);">
+          <div class="form-group"><label>PayPal E-Mail Adresse</label><input type="email" id="paypalEmail" placeholder="deine@paypal.com"></div>
+          <button class="btn btn-primary" onclick="savePaypal()" style="margin-top:8px;">PayPal-Adresse speichern</button>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-header"><div class="card-title">⚙ Konto-Einstellungen</div></div>
+        <div class="settings-row">
+          <div><div class="settings-label">Standard-Risiko</div><div class="settings-desc">Vorausgefüllter Risikowert beim Hinzufügen neuer Trades</div></div>
+          <input type="number" placeholder="1%" style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-family:'Outfit',sans-serif;width:80px;text-align:center;">
+        </div>
+        <div class="settings-row">
+          <div><div class="settings-label">Account-Größe</div><div class="settings-desc">Für Drawdown- und Positionsberechnungen</div></div>
+          <input type="number" placeholder="10000" style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-family:'Outfit',sans-serif;width:100px;text-align:center;">
+        </div>
+        <div class="settings-row">
+          <div><div class="settings-label">Daten exportieren</div><div class="settings-desc">Alle Trades als CSV herunterladen</div></div>
+          <button class="btn btn-ghost" onclick="exportCSV()" style="font-size:.78rem;padding:8px 14px;">CSV Export</button>
+        </div>
+
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-header"><div class="card-title">🚪 Session</div></div>
+        <div class="settings-row">
+          <div><div class="settings-label">Ausloggen</div><div class="settings-desc">Aus TradeIQ ausloggen</div></div>
+          <button class="btn btn-ghost" onclick="doLogout()" style="font-size:.78rem;padding:8px 14px;border-color:var(--red);color:var(--red);">Ausloggen</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"><span id="toastIcon">✓</span><span id="toastMsg">Gespeichert</span></div>
+
+<!-- PWA MANIFEST INLINE -->
+<script>
+// ═══════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════
+let trades = JSON.parse(localStorage.getItem('tradeiq_trades') || '[]');
+let currentUser = JSON.parse(localStorage.getItem('tradeiq_user') || 'null');
+let selectedEmotion = '';
+
+// ── Boot ──
+if (currentUser) {
+  showApp();
+} else if (!checkStripeReturn()) {
+  document.getElementById('landing').classList.add('active');
+}
+
+// ═══════════════════════════════════════
+//  AUTH
+// ═══════════════════════════════════════
+function showRegister() {
+  document.getElementById('registerModal').classList.add('show');
+  document.getElementById('loginModal').classList.remove('show');
+}
+function showLogin() {
+  document.getElementById('loginModal').classList.add('show');
+  document.getElementById('registerModal').classList.remove('show');
+}
+function closeModals() {
+  document.getElementById('registerModal').classList.remove('show');
+  document.getElementById('loginModal').classList.remove('show');
+}
+function switchToLogin() { showLogin(); }
+
+function goToPayment() {
+  const name = document.getElementById('regName').value.trim();
+  const email = document.getElementById('regEmail').value.trim();
+  const pass = document.getElementById('regPass').value;
+  if (!name || !email || !pass) { showToast('Bitte alle Felder ausfüllen', '⚠'); return; }
+  if (pass.length < 8) { showToast('Passwort zu kurz (min. 8 Zeichen)', '⚠'); return; }
+  if (!email.includes('@')) { showToast('Bitte gültige E-Mail eingeben', '⚠'); return; }
+
+  // Save user data temporarily (pending payment)
+  const pendingUser = { name, email, pass, plan: 'pro', since: new Date().toISOString(), paid: false };
+  localStorage.setItem('tradeiq_pending_user', JSON.stringify(pendingUser));
+
+  // Show step 2 briefly then redirect
+  document.getElementById('regStep1').style.display = 'none';
+  document.getElementById('regStep2').style.display = 'block';
+
+  setTimeout(() => {
+    window.location.href = 'https://buy.stripe.com/cNi00j5n2chP2P7fVDaVa01';
+  }, 1800);
+}
+
+function doRegister() {
+  // Legacy fallback - not used in new flow
+}
+
+// Check if user returned from Stripe payment
+function checkStripeReturn() {
+  const params = new URLSearchParams(window.location.search);
+  const pending = JSON.parse(localStorage.getItem('tradeiq_pending_user') || 'null');
+
+  // Stripe adds ?session_id= or we check if pending user exists after returning
+  if (pending && !pending.paid) {
+    // Mark as paid and activate account
+    pending.paid = true;
+    localStorage.setItem('tradeiq_user', JSON.stringify(pending));
+    localStorage.removeItem('tradeiq_pending_user');
+    currentUser = pending;
+    // Clean URL
+    window.history.replaceState({}, document.title, window.location.pathname);
+    showApp();
+    setTimeout(() => showToast('Zahlung erfolgreich! Willkommen bei TradeIQ 🎉', '✦'), 500);
+    return true;
+  }
+  return false;
+}
+
+function doLogin() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const pass = document.getElementById('loginPass').value;
+  const stored = JSON.parse(localStorage.getItem('tradeiq_user') || 'null');
+  if (!stored || stored.email !== email || stored.pass !== pass) {
+    showToast('E-Mail oder Passwort falsch', '✗');
+    return;
+  }
+  currentUser = stored;
+  closeModals();
+  showApp();
+  showToast('Erfolgreich eingeloggt!', '✓');
+}
+
+function doLogout() {
+  currentUser = null;
+  document.getElementById('app').classList.remove('active');
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('landing').classList.add('active');
+  document.getElementById('landing').style.display = 'block';
+  showToast('Ausgeloggt', '👋');
+}
+
+function showApp() {
+  document.getElementById('landing').classList.remove('active');
+  document.getElementById('landing').style.display = 'none';
+  document.getElementById('app').style.display = 'flex';
+  document.getElementById('app').classList.add('active');
+  // Set user info
+  const initial = currentUser.name.charAt(0).toUpperCase();
+  document.getElementById('avatarText').textContent = initial;
+  document.getElementById('userName').textContent = currentUser.name.split(' ')[0];
+  // Show PayPal section only for admin
+  const adminSection = document.getElementById('adminPaypalSection');
+  if (adminSection) {
+    const isAdmin = currentUser.email === 'admin@tradeiq.app' || currentUser.isAdmin === true;
+    adminSection.style.display = isAdmin ? 'block' : 'none';
+  }
+  // Set default date
+  const now = new Date();
+  const local = new Date(now - now.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+  document.getElementById('t-date').value = local;
+  refreshAll();
+}
+
+// ═══════════════════════════════════════
+//  VIEWS
+// ═══════════════════════════════════════
+const viewTitles = {
+  dashboard: ['Dashboard', 'Deine Performance auf einen Blick'],
+  trades: ['Alle Trades', 'Deine komplette Handelshistorie'],
+  addTrade: ['Trade hinzufügen', 'Dokumentiere jeden Trade detailliert'],
+  analytics: ['Statistiken', 'Tiefgehende Analyse deiner Trades'],
+  tips: ['KI-Tipps', 'Personalisierte Verbesserungsvorschläge'],
+  settings: ['Einstellungen', 'Konto & Präferenzen'],
+};
+
+function showView(id, btn) {
+  document.querySelectorAll('.dash-view').forEach(v => v.classList.remove('active'));
+  document.getElementById('view-' + id).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  // highlight correct nav item when called without btn (e.g. from button click)
+  if (!btn) {
+    document.querySelectorAll('.nav-item').forEach(n => {
+      if (n.getAttribute('onclick') && n.getAttribute('onclick').includes("'" + id + "'")) n.classList.add('active');
+    });
+  }
+  document.getElementById('viewTitle').textContent = viewTitles[id][0];
+  document.getElementById('viewSub').textContent = viewTitles[id][1];
+  if (id === 'dashboard') refreshAll();
+  if (id === 'analytics') refreshAnalytics();
+  if (id === 'tips') refreshTips();
+  // Close sidebar on mobile
+  if (window.innerWidth < 768) document.getElementById('sidebar').classList.remove('open');
+}
+
+function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+function scrollToFeatures() { document.getElementById('features').scrollIntoView({ behavior: 'smooth' }); }
+
+// ═══════════════════════════════════════
+//  TRADE LOGIC
+// ═══════════════════════════════════════
+function calcRR() {
+  const entry = parseFloat(document.getElementById('t-entry').value);
+  const sl = parseFloat(document.getElementById('t-sl').value);
+  const tp = parseFloat(document.getElementById('t-tp').value);
+  if (!isNaN(entry) && !isNaN(sl) && !isNaN(tp) && sl !== entry) {
+    const risk = Math.abs(entry - sl);
+    const reward = Math.abs(tp - entry);
+    const rr = reward / risk;
+    const el = document.getElementById('rrDisplay');
+    el.textContent = '1:' + rr.toFixed(2);
+    el.style.color = rr >= 2 ? 'var(--green)' : rr >= 1 ? 'var(--accent3)' : 'var(--red)';
+  } else {
+    document.getElementById('rrDisplay').textContent = '—';
+    document.getElementById('rrDisplay').style.color = 'var(--accent)';
+  }
+}
+
+function selectEmotion(btn, emotion) {
+  document.querySelectorAll('.emoji-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  document.getElementById('t-emotion').value = emotion;
+  selectedEmotion = emotion;
+}
+
+function saveTrade() {
+  const asset = document.getElementById('t-asset').value.trim();
+  if (!asset) { showToast('Bitte Asset eingeben', '⚠'); return; }
+  const entry = parseFloat(document.getElementById('t-entry').value) || 0;
+  const sl = parseFloat(document.getElementById('t-sl').value) || 0;
+  const tp = parseFloat(document.getElementById('t-tp').value) || 0;
+  let rr = '—';
+  if (entry && sl && tp && sl !== entry) {
+    const r = Math.abs(tp - entry) / Math.abs(entry - sl);
+    rr = '1:' + r.toFixed(2);
+  }
+  const trade = {
+    id: Date.now(),
+    date: document.getElementById('t-date').value,
+    asset,
+    market: document.getElementById('t-market').value,
+    direction: document.getElementById('t-direction').value,
+    status: document.getElementById('t-status').value,
+    entry, sl, tp, rr,
+    size: parseFloat(document.getElementById('t-size').value) || 0,
+    risk: parseFloat(document.getElementById('t-risk').value) || 0,
+    pnl: parseFloat(document.getElementById('t-pnl').value) || 0,
+    setup: document.getElementById('t-setup').value,
+    timeframe: document.getElementById('t-timeframe').value,
+    session: document.getElementById('t-session').value,
+    emotion: document.getElementById('t-emotion').value,
+    notes: document.getElementById('t-notes').value,
+    rules: document.getElementById('t-rules').value,
+  };
+  trades.unshift(trade);
+  localStorage.setItem('tradeiq_trades', JSON.stringify(trades));
+  clearTradeForm();
+  refreshAll();
+  refreshAnalytics();
+  refreshTips();
+  showView('trades');
+  showToast('Trade erfolgreich gespeichert! ✦', '✓');
+}
+
+function clearTradeForm() {
+  ['t-asset','t-entry','t-sl','t-tp','t-size','t-risk','t-pnl','t-notes'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('t-direction').value = 'LONG';
+  document.getElementById('t-status').value = 'WIN';
+  document.getElementById('t-emotion').value = '';
+  document.querySelectorAll('.emoji-btn').forEach(b => b.classList.remove('selected'));
+  document.getElementById('rrDisplay').textContent = '—';
+  document.getElementById('rrDisplay').style.color = 'var(--accent)';
+  const now = new Date();
+  const local = new Date(now - now.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+  document.getElementById('t-date').value = local;
+}
+
+function deleteTrade(id) {
+  trades = trades.filter(t => t.id !== id);
+  localStorage.setItem('tradeiq_trades', JSON.stringify(trades));
+  refreshAll();
+  refreshAnalytics();
+  refreshTips();
+  showToast('Trade gelöscht', '🗑');
+}
+
+// ═══════════════════════════════════════
+//  REFRESH / STATS
+// ═══════════════════════════════════════
+function refreshAll() {
+  updateMetrics();
+  renderTradesTable();
+  updateChart();
+}
+
+function updateMetrics() {
+  const closed = trades.filter(t => t.status !== 'OPEN');
+  const wins = closed.filter(t => t.status === 'WIN');
+  const losses = closed.filter(t => t.status === 'LOSS');
+  const totalPL = trades.reduce((s, t) => s + (t.pnl || 0), 0);
+  const winRate = closed.length ? (wins.length / closed.length * 100) : 0;
+  const avgRR = () => {
+    const rrs = trades.filter(t => t.rr && t.rr !== '—').map(t => parseFloat(t.rr.split(':')[1]) || 0);
+    return rrs.length ? rrs.reduce((a,b)=>a+b,0)/rrs.length : 0;
+  };
+  const grossWin = wins.reduce((s, t) => s + (t.pnl || 0), 0);
+  const grossLoss = Math.abs(losses.reduce((s, t) => s + (t.pnl || 0), 0));
+  const pf = grossLoss > 0 ? (grossWin / grossLoss).toFixed(2) : wins.length > 0 ? '∞' : '0';
+  const openCount = trades.filter(t => t.status === 'OPEN').length;
+
+  document.getElementById('totalPL').textContent = (totalPL >= 0 ? '+' : '') + '€' + totalPL.toFixed(0);
+  document.getElementById('totalPL').className = 'metric-value ' + (totalPL >= 0 ? 'up' : 'down');
+  document.getElementById('winRate').textContent = winRate.toFixed(1) + '%';
+  document.getElementById('winRate').className = 'metric-value ' + (winRate >= 50 ? 'up' : winRate > 0 ? 'down' : '');
+  document.getElementById('winRateChange').textContent = closed.length + ' Trades';
+  document.getElementById('avgRR').textContent = avgRR().toFixed(2) + 'R';
+  document.getElementById('avgRR').className = 'metric-value ' + (avgRR() >= 2 ? 'up' : avgRR() > 0 ? 'neutral' : '');
+  document.getElementById('profitFactor').textContent = pf;
+  document.getElementById('totalTrades').textContent = trades.length;
+  document.getElementById('openTrades').textContent = openCount + ' offen';
+
+  // Max Drawdown (simple)
+  let peak = 0, dd = 0, running = 0;
+  [...trades].reverse().forEach(t => {
+    running += (t.pnl || 0);
+    if (running > peak) peak = running;
+    if (peak - running > dd) dd = peak - running;
+  });
+  document.getElementById('maxDD').textContent = '-€' + dd.toFixed(0);
+}
+
+function renderTradesTable(container = null) {
+  const ids = container ? [container] : ['recentTradesTable', 'allTradesTable'];
+  ids.forEach(cid => {
+    const el = document.getElementById(cid);
+    if (!el) return;
+    const data = cid === 'recentTradesTable' ? trades.slice(0, 8) : trades;
+    if (!data.length) {
+      el.innerHTML = `<table class="trades-table"><tr><td colspan="8" style="text-align:center;color:var(--muted);padding:40px;">Noch keine Trades. <span style="color:var(--accent);cursor:pointer;" onclick="showView('addTrade')">Ersten Trade hinzufügen →</span></td></tr></table>`;
+      return;
+    }
+    el.innerHTML = `<table class="trades-table">
+      <thead><tr>
+        <th>Datum</th><th>Asset</th><th>Richtung</th><th>Setup</th><th>R:R</th><th>Status</th><th>P&L</th><th></th>
+      </tr></thead>
+      <tbody>${data.map(t => `<tr>
+        <td style="color:var(--muted)">${t.date ? t.date.slice(0,10) : '—'}</td>
+        <td style="font-weight:700">${t.asset}</td>
+        <td><span class="badge ${t.direction==='LONG'?'badge-long':'badge-short'}">${t.direction}</span></td>
+        <td style="color:var(--muted)">${t.setup || '—'}</td>
+        <td>${t.rr || '—'}</td>
+        <td><span class="badge ${t.status==='WIN'?'badge-win':t.status==='LOSS'?'badge-loss':'badge-open'}">${t.status}</span></td>
+        <td class="${(t.pnl||0)>=0?'up':'down'}">${(t.pnl||0)>=0?'+':''}€${(t.pnl||0).toFixed(0)}</td>
+        <td><button onclick="deleteTrade(${t.id})" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:.85rem;" title="Löschen">🗑</button></td>
+      </tr>`).join('')}</tbody>
+    </table>`;
+  });
+}
+
+function updateChart() {
+  // ── P&L bar chart ──
+  const el = document.getElementById('plChart');
+  if (!trades.length) {
+    el.innerHTML = '<div style="color:var(--muted);font-size:.8rem;width:100%;text-align:center;align-self:center;">Noch keine Trades</div>';
+  } else {
+    const last = [...trades].reverse().slice(-20);
+    let running = 0;
+    const vals = last.map(t => { running += (t.pnl || 0); return running; });
+    const max = Math.max(...vals.map(Math.abs), 1);
+    el.innerHTML = vals.map((v, i) => {
+      const h = Math.max(4, Math.abs(v) / max * 160);
+      const color = v >= 0 ? 'var(--green)' : 'var(--red)';
+      return `<div class="bar-wrap"><div class="bar" style="height:${h}px;background:${color};opacity:${0.5 + 0.5*(i/vals.length)}"></div></div>`;
+    }).join('');
+  }
+
+  // ── Win/Loss donut ──
+  const wlEl = document.getElementById('winLossViz');
+  if (!wlEl) return;
+  const closed = trades.filter(t => t.status !== 'OPEN');
+  const wins   = closed.filter(t => t.status === 'WIN').length;
+  const losses = closed.filter(t => t.status === 'LOSS').length;
+  const be     = closed.filter(t => t.status === 'BE').length;
+  const total  = wins + losses + be;
+
+  if (total === 0) {
+    wlEl.innerHTML = '<div style="color:var(--muted);font-size:.8rem;">Noch keine Trades</div>';
+    wlEl.style.cssText = 'display:flex;gap:8px;align-items:center;height:200px;background:var(--bg3);border-radius:10px;padding:20px;justify-content:center;';
+    return;
+  }
+
+  const winPct  = Math.round(wins  / total * 100);
+  const lossPct = Math.round(losses / total * 100);
+  const bePct   = 100 - winPct - lossPct;
+  const r = 60, cx = 80, cy = 80, sw = 18;
+  const circ = 2 * Math.PI * r;
+  const arc = (pct, off) =>
+    `stroke-dasharray="${(pct/100*circ).toFixed(2)} ${circ}" stroke-dashoffset="${(-off/100*circ).toFixed(2)}"`;
+
+  wlEl.style.cssText = 'background:transparent;height:auto;display:flex;align-items:center;justify-content:center;';
+  wlEl.innerHTML = `
+    <div style="display:flex;align-items:center;gap:28px;flex-wrap:wrap;justify-content:center;">
+      <svg width="160" height="160" viewBox="0 0 160 160">
+        <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="var(--border)" stroke-width="${sw}"/>
+        ${wins>0?`<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="var(--green)" stroke-width="${sw}" ${arc(winPct,0)} transform="rotate(-90 ${cx} ${cy})"/>`:'' }
+        ${losses>0?`<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="var(--red)" stroke-width="${sw}" ${arc(lossPct,winPct)} transform="rotate(-90 ${cx} ${cy})"/>`:'' }
+        ${be>0?`<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="var(--accent3)" stroke-width="${sw}" ${arc(bePct,winPct+lossPct)} transform="rotate(-90 ${cx} ${cy})"/>`:'' }
+        <text x="${cx}" y="${cy-8}" text-anchor="middle" fill="var(--text)" font-size="22" font-weight="800" font-family="Space Mono,monospace">${winPct}%</text>
+        <text x="${cx}" y="${cy+13}" text-anchor="middle" fill="var(--muted)" font-size="10" font-family="Outfit,sans-serif">Win-Rate</text>
+      </svg>
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="width:12px;height:12px;border-radius:50%;background:var(--green);flex-shrink:0"></div>
+          <div><div style="font-size:.95rem;font-weight:700;color:var(--green);font-family:'Space Mono',monospace">${wins} Wins</div><div style="font-size:.7rem;color:var(--muted)">${winPct}% der Trades</div></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="width:12px;height:12px;border-radius:50%;background:var(--red);flex-shrink:0"></div>
+          <div><div style="font-size:.95rem;font-weight:700;color:var(--red);font-family:'Space Mono',monospace">${losses} Losses</div><div style="font-size:.7rem;color:var(--muted)">${lossPct}% der Trades</div></div>
+        </div>
+        ${be>0?`<div style="display:flex;align-items:center;gap:10px;">
+          <div style="width:12px;height:12px;border-radius:50%;background:var(--accent3);flex-shrink:0"></div>
+          <div><div style="font-size:.95rem;font-weight:700;color:var(--accent3);font-family:'Space Mono',monospace">${be} BE</div><div style="font-size:.7rem;color:var(--muted)">${bePct}% der Trades</div></div>
+        </div>`:''}
+        <div style="border-top:1px solid var(--border);padding-top:8px;font-size:.72rem;color:var(--muted);font-family:'Space Mono',monospace;">${total} Trades gesamt</div>
+      </div>
+    </div>`;
+}
+
+function refreshAnalytics() {
+  if (!trades.length) return;
+  const closed = trades.filter(t => t.status !== 'OPEN');
+  // Best/worst setup
+  const setups = {};
+  closed.forEach(t => {
+    if (!setups[t.setup]) setups[t.setup] = { w: 0, t: 0 };
+    setups[t.setup].t++;
+    if (t.status === 'WIN') setups[t.setup].w++;
+  });
+  const setupArr = Object.entries(setups).map(([k,v]) => ({ name: k, wr: v.t ? v.w/v.t : 0, count: v.t })).filter(s => s.count >= 1);
+  setupArr.sort((a,b) => b.wr - a.wr);
+  document.getElementById('bestSetup').textContent = setupArr[0]?.name + ' (' + Math.round((setupArr[0]?.wr||0)*100) + '%)' || '—';
+  document.getElementById('worstSetup').textContent = setupArr[setupArr.length-1]?.name + ' (' + Math.round((setupArr[setupArr.length-1]?.wr||0)*100) + '%)' || '—';
+
+  // Best day P&L
+  const dayPL = {};
+  trades.forEach(t => {
+    const day = t.date ? t.date.slice(0,10) : 'unbekannt';
+    dayPL[day] = (dayPL[day] || 0) + (t.pnl || 0);
+  });
+  const bestDay = Object.entries(dayPL).sort((a,b)=>b[1]-a[1])[0];
+  document.getElementById('bestDay').textContent = bestDay ? bestDay[0] + ' (+€' + bestDay[1].toFixed(0) + ')' : '—';
+
+  // Emotion
+  const emoWins = {};
+  closed.filter(t => t.emotion).forEach(t => {
+    if (!emoWins[t.emotion]) emoWins[t.emotion] = { w:0, t:0 };
+    emoWins[t.emotion].t++;
+    if (t.status === 'WIN') emoWins[t.emotion].w++;
+  });
+  const emoArr = Object.entries(emoWins).sort((a,b) => (b[1].w/b[1].t) - (a[1].w/a[1].t));
+  document.getElementById('emotionImpact').textContent = emoArr[0] ? emoArr[0][0] + ' (' + Math.round(emoArr[0][1].w/emoArr[0][1].t*100) + '% WR)' : '—';
+
+  // Rules
+  const ruleMap = { yes: [], partial: [], no: [] };
+  closed.forEach(t => { if (ruleMap[t.rules]) ruleMap[t.rules].push(t.pnl||0); });
+  const ruleAvg = arr => arr.length ? arr.reduce((a,b)=>a+b,0)/arr.length : null;
+  ['yes','partial','no'].forEach((k,i) => {
+    const ids = ['ruleYes','rulePartial','ruleNo'];
+    const avg = ruleAvg(ruleMap[k]);
+    document.getElementById(ids[i]).textContent = avg !== null ? (avg>=0?'+':'')+'€'+avg.toFixed(0)+' Ø' : '—';
+  });
+
+  // Setup chart
+  const sc = document.getElementById('setupChart');
+  if (setupArr.length) {
+    sc.innerHTML = setupArr.slice(0,6).map(s => `
+      <div style="margin-bottom:12px;">
+        <div style="display:flex;justify-content:space-between;margin-bottom:4px;font-size:.78rem;">
+          <span>${s.name}</span>
+          <span style="color:${s.wr>=.5?'var(--green)':'var(--red)'}">${Math.round(s.wr*100)}% (${s.count}x)</span>
+        </div>
+        <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:${s.wr*100}%"></div></div>
+      </div>
+    `).join('');
+  }
+
+  // TF chart
+  const tfMap = {};
+  closed.forEach(t => {
+    if (!tfMap[t.timeframe]) tfMap[t.timeframe] = {w:0,t:0};
+    tfMap[t.timeframe].t++;
+    if (t.status==='WIN') tfMap[t.timeframe].w++;
+  });
+  const tc = document.getElementById('tfChart');
+  const tfArr = Object.entries(tfMap);
+  if (tfArr.length) {
+    tc.innerHTML = tfArr.map(([tf,v]) => `
+      <div style="margin-bottom:12px;">
+        <div style="display:flex;justify-content:space-between;margin-bottom:4px;font-size:.78rem;">
+          <span>${tf}</span>
+          <span style="color:${v.w/v.t>=.5?'var(--green)':'var(--red)'}">${Math.round(v.w/v.t*100)}%</span>
+        </div>
+        <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:${v.w/v.t*100}%"></div></div>
+      </div>
+    `).join('');
+  }
+}
+
+function refreshTips() {
+  const closed = trades.filter(t => t.status !== 'OPEN');
+  const wins = closed.filter(t => t.status === 'WIN');
+  const wr = closed.length ? wins.length / closed.length : 0;
+  const tips = [];
+
+  if (trades.length >= 3) {
+    // Win rate tip
+    if (wr < 0.45) tips.push({
+      tag: '⚠ Performance', title: 'Deine Win-Rate ist unter 45%',
+      text: `Du hast aktuell eine Win-Rate von ${Math.round(wr*100)}%. Überprüfe deine Setup-Auswahl – trade nur A+ Setups die klaren Regeln folgen. Qualität vor Quantität!`, color: 'rgba(255,69,96,.3)', bg:'rgba(255,69,96,.06)'
+    });
+    if (wr >= 0.65) tips.push({
+      tag: '🏆 Stark', title: 'Deine Win-Rate ist ausgezeichnet!',
+      text: `${Math.round(wr*100)}% Win-Rate ist stark. Stelle sicher dass du auch das R:R maximierst – lass Gewinne laufen!`, color: 'rgba(0,229,160,.3)', bg:'rgba(0,229,160,.06)'
+    });
+
+    // R:R tip
+    const rrs = trades.filter(t=>t.rr&&t.rr!=='—').map(t=>parseFloat(t.rr.split(':')[1])||0);
+    const avgRR = rrs.length ? rrs.reduce((a,b)=>a+b,0)/rrs.length : 0;
+    if (avgRR < 1.5 && rrs.length > 2) tips.push({
+      tag: '📉 R:R Alert', title: `Dein durchschnittliches R:R ist ${avgRR.toFixed(2)}`,
+      text: `Ein R:R unter 1.5 bedeutet du brauchst eine Win-Rate über 60% um profitabel zu sein. Setze TP-Level weiter oder SL enger – aber nur wenn es die Struktur erlaubt!`, color: 'rgba(245,158,11,.3)', bg:'rgba(245,158,11,.06)'
+    });
+
+    // Rules tip
+    const ruleNo = closed.filter(t=>t.rules==='no');
+    if (ruleNo.length > 0) {
+      const ruleNoLoss = ruleNo.filter(t=>t.status==='LOSS').length;
+      tips.push({
+        tag: '⚡ Regelverstoß', title: `${ruleNo.length}x gegen deine Regeln getraded`,
+        text: `Davon endeten ${ruleNoLoss} als Verlust (${Math.round(ruleNoLoss/ruleNo.length*100)}%). Halte dich an dein Regelwerk – disziplinierte Trades performen deutlich besser.`, color: 'rgba(124,58,237,.3)', bg:'rgba(124,58,237,.06)'
+      });
+    }
+
+    // Emotion tip
+    const fomo = closed.filter(t=>t.emotion==='FOMO');
+    if (fomo.length >= 2) {
+      const fomoLoss = fomo.filter(t=>t.status==='LOSS').length;
+      tips.push({
+        tag: '🧠 Psychologie', title: `FOMO kostet dich Geld`,
+        text: `Von deinen ${fomo.length} FOMO-Trades endeten ${fomoLoss} als Verlust (${Math.round(fomoLoss/fomo.length*100)}%). Warte auf die nächste Setup-Gelegenheit – der Markt kommt immer wieder.`, color: 'rgba(245,158,11,.3)', bg:'rgba(245,158,11,.06)'
+      });
+    }
+  }
+
+  // Always-on tips
+  tips.push({
+    tag: '✦ Pro Tipp', title: 'Tracke deinen besten Handelstag',
+    text: 'Analysiere deinen profitabelsten Tag: Welche Uhrzeit? Welches Setup? Welche Emotion? Repliziere die Bedingungen so oft wie möglich.', color: 'rgba(0,229,160,.2)', bg:'rgba(0,229,160,.04)'
+  });
+
+  const container = document.getElementById('aiTipsContainer');
+  container.innerHTML = tips.map(t => `
+    <div class="ai-tip" style="border-color:${t.color};background:linear-gradient(135deg,${t.bg},var(--card));margin-bottom:16px;">
+      <div class="ai-tip-tag">${t.tag}</div>
+      <h4>${t.title}</h4>
+      <p>${t.text}</p>
+    </div>
+  `).join('');
+}
+
+function cancelSubscription() {
+  if (confirm('Möchtest du dein Abo wirklich kündigen? Du wirst zu Stripe weitergeleitet.')) {
+    window.open('https://billing.stripe.com/p/login/8x2fZhaHm6XvahzgZHaVa00', '_blank');
+  }
+}
+
+function savePaypal() {
+  const email = document.getElementById('paypalEmail').value.trim();
+  if (!email) { showToast('Bitte E-Mail eingeben', '⚠'); return; }
+  localStorage.setItem('tradeiq_paypal', email);
+  showToast('PayPal-Adresse gespeichert ✓', '💰');
+}
+
+function exportCSV() {
+  if (!trades.length) { showToast('Keine Trades zum Exportieren', '⚠'); return; }
+  const headers = ['Datum','Asset','Markt','Richtung','Setup','Timeframe','Entry','SL','TP','R:R','Größe','Risiko','P&L','Status','Emotion','Regelkonform','Notizen'];
+  const rows = trades.map(t => [
+    t.date, t.asset, t.market, t.direction, t.setup, t.timeframe,
+    t.entry, t.sl, t.tp, t.rr, t.size, t.risk, t.pnl,
+    t.status, t.emotion, t.rules, (t.notes||'').replace(/,/g,';')
+  ]);
+  const csv = [headers, ...rows].map(r => r.join(',')).join('\n');
+  const a = document.createElement('a');
+  a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+  a.download = 'tradeiq_export.csv';
+  a.click();
+  showToast('CSV Export gestartet!', '📁');
+}
+
+// ═══════════════════════════════════════
+//  TOAST
+// ═══════════════════════════════════════
+function showToast(msg, icon = '✓') {
+  const t = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  document.getElementById('toastIcon').textContent = icon;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+</script>
+</body>
+</html>
