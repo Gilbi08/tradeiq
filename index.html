@@ -1240,6 +1240,24 @@ footer {
   </div>
 </div>
 
+<!-- RESET PASSWORD MODAL -->
+<div class="modal-overlay" id="resetPasswordModal">
+  <div class="modal">
+    <div style="font-size:2rem;margin-bottom:12px;">🔐</div>
+    <h2 style="font-size:1.4rem;margin-bottom:8px;">Neues Passwort setzen</h2>
+    <p style="color:var(--muted);font-size:.88rem;margin-bottom:24px;">Gib dein neues Passwort ein.</p>
+    <div class="form-group">
+      <label>Neues Passwort</label>
+      <input type="password" placeholder="Mindestens 8 Zeichen" id="newPassword">
+    </div>
+    <div class="form-group">
+      <label>Passwort wiederholen</label>
+      <input type="password" placeholder="Passwort bestätigen" id="newPasswordConfirm">
+    </div>
+    <button class="full-btn full-btn-primary" onclick="doResetPassword()" style="margin-top:4px;" id="resetBtn">Passwort speichern →</button>
+  </div>
+</div>
+
 <!-- ═══════════════ APP ═══════════════ -->
 <div id="app">
   <!-- SIDEBAR -->
@@ -1559,11 +1577,21 @@ let selectedEmotion = '';
 
 // ── Boot ──
 async function boot() {
+  // Check if this is a password reset redirect (Supabase puts tokens in URL hash)
+  const hash = window.location.hash;
+  if (hash && hash.includes('type=recovery')) {
+    // This is a password reset link click
+    const { data: { session }, error } = await sb.auth.getSession();
+    document.getElementById('loadingScreen').style.display = 'none';
+    document.getElementById('landing').classList.add('active');
+    showResetPasswordModal();
+    return;
+  }
+
   const { data: { session } } = await sb.auth.getSession();
   if (session) {
     const paid = session.user.user_metadata?.paid === true;
     if (!paid) {
-      // Not paid yet – show paywall
       document.getElementById('loadingScreen').style.display = 'none';
       document.getElementById('landing').classList.add('active');
       showToast('Bitte zuerst bezahlen um Zugang zu erhalten.', '🔒');
@@ -1583,6 +1611,16 @@ async function boot() {
     document.getElementById('landing').classList.add('active');
   }
 }
+
+// Listen for auth state changes (catches password recovery)
+sb.auth.onAuthStateChange(async (event, session) => {
+  if (event === 'PASSWORD_RECOVERY') {
+    document.getElementById('loadingScreen').style.display = 'none';
+    document.getElementById('landing').classList.add('active');
+    showResetPasswordModal();
+  }
+});
+
 boot();
 
 // ═══════════════════════════════════════
@@ -2227,6 +2265,49 @@ async function sendPasswordReset() {
       <button class="full-btn" onclick="closeForgotModal()" style="background:var(--bg3);border:1px solid var(--border);color:var(--text);">← Zurück zum Login</button>
     </div>
   `;
+}
+
+function showResetPasswordModal() {
+  document.getElementById('resetPasswordModal').classList.add('show');
+}
+
+async function doResetPassword() {
+  const newPass = document.getElementById('newPassword').value;
+  const confirm = document.getElementById('newPasswordConfirm').value;
+
+  if (!newPass || !confirm) { showToast('Bitte beide Felder ausfüllen', '⚠'); return; }
+  if (newPass.length < 8) { showToast('Passwort zu kurz (min. 8 Zeichen)', '⚠'); return; }
+  if (newPass !== confirm) { showToast('Passwörter stimmen nicht überein', '⚠'); return; }
+
+  const btn = document.getElementById('resetBtn');
+  btn.textContent = 'Wird gespeichert...';
+  btn.disabled = true;
+
+  const { error } = await sb.auth.updateUser({ password: newPass });
+
+  btn.textContent = 'Passwort speichern →';
+  btn.disabled = false;
+
+  if (error) {
+    showToast('Fehler: ' + error.message, '✗');
+    return;
+  }
+
+  // Success – show confirmation then redirect to login
+  document.querySelector('#resetPasswordModal .modal').innerHTML = `
+    <div style="text-align:center;padding:20px 0;">
+      <div style="font-size:3rem;margin-bottom:16px;">✅</div>
+      <h2 style="font-size:1.3rem;margin-bottom:12px;">Passwort geändert!</h2>
+      <p style="color:var(--muted);font-size:.88rem;margin-bottom:24px;line-height:1.6;">
+        Dein Passwort wurde erfolgreich geändert.<br>
+        Du kannst dich jetzt einloggen!
+      </p>
+      <button class="full-btn full-btn-primary" onclick="document.getElementById('resetPasswordModal').classList.remove('show'); showLogin();">Jetzt einloggen →</button>
+    </div>
+  `;
+
+  // Sign out so they login fresh
+  await sb.auth.signOut();
 }
 
 function cancelSubscription() {
