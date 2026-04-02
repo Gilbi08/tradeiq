@@ -1206,16 +1206,37 @@ footer {
     <h2 id="loginTitle">Willkommen zurück</h2>
     <p id="loginSubtitle">Log dich in dein TradeIQ-Konto ein.</p>
     <div class="form-group">
-      <label>E-Mail</label>
+      <label id="loginEmailLabel">E-Mail</label>
       <input type="email" placeholder="max@example.com" id="loginEmail">
     </div>
     <div class="form-group">
-      <label>Passwort</label>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <label id="loginPassLabel">Passwort</label>
+        <button onclick="showForgotPassword()" style="background:none;border:none;color:var(--accent);font-size:.78rem;cursor:pointer;font-family:'Outfit',sans-serif;" id="forgotBtn">Passwort vergessen?</button>
+      </div>
       <input type="password" placeholder="Passwort" id="loginPass">
     </div>
     <button class="full-btn full-btn-primary" id="loginBtn" onclick="doLogin()" style="margin-top:8px;">Einloggen →</button>
     <div class="modal-divider">oder</div>
     <button class="full-btn" id="loginSwitch" style="background:var(--bg3);border:1px solid var(--border);color:var(--text);" onclick="showRegister()">Neu hier? Konto erstellen</button>
+  </div>
+</div>
+
+<!-- FORGOT PASSWORD MODAL -->
+<div class="modal-overlay" id="forgotModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeForgotModal()">×</button>
+    <div style="font-size:2rem;margin-bottom:12px;">🔑</div>
+    <h2 id="forgotTitle" style="font-size:1.4rem;margin-bottom:8px;">Passwort vergessen?</h2>
+    <p id="forgotSubtitle" style="color:var(--muted);font-size:.88rem;margin-bottom:24px;">Gib deine E-Mail ein – du bekommst einen Link zum Zurücksetzen.</p>
+    <div class="form-group">
+      <label id="forgotEmailLabel">E-Mail</label>
+      <input type="email" placeholder="deine@email.com" id="forgotEmail">
+    </div>
+    <button class="full-btn full-btn-primary" id="forgotBtn2" onclick="sendPasswordReset()" style="margin-top:4px;">Link senden →</button>
+    <div style="margin-top:14px;text-align:center;">
+      <button onclick="closeForgotModal()" style="background:none;border:none;color:var(--muted);font-size:.82rem;cursor:pointer;font-family:'Outfit',sans-serif;" id="backToLogin">← Zurück zum Login</button>
+    </div>
   </div>
 </div>
 
@@ -2162,6 +2183,52 @@ function refreshTips() {
   `).join('');
 }
 
+// ═══════════════════════════════════════
+//  FORGOT PASSWORD
+// ═══════════════════════════════════════
+function showForgotPassword() {
+  document.getElementById('loginModal').classList.remove('show');
+  document.getElementById('forgotModal').classList.add('show');
+  const email = document.getElementById('loginEmail').value;
+  if (email) document.getElementById('forgotEmail').value = email;
+}
+
+function closeForgotModal() {
+  document.getElementById('forgotModal').classList.remove('show');
+  document.getElementById('loginModal').classList.add('show');
+}
+
+async function sendPasswordReset() {
+  const email = document.getElementById('forgotEmail').value.trim();
+  if (!email) { showToast('Bitte E-Mail eingeben', '⚠'); return; }
+
+  const btn = document.getElementById('forgotBtn2');
+  btn.textContent = 'Wird gesendet...';
+  btn.disabled = true;
+
+  const { error } = await sb.auth.resetPasswordForEmail(email, {
+    redirectTo: window.location.origin
+  });
+
+  btn.textContent = 'Link senden →';
+  btn.disabled = false;
+
+  if (error) { showToast('Fehler: ' + error.message, '✗'); return; }
+
+  document.querySelector('#forgotModal .modal').innerHTML = `
+    <div style="text-align:center;padding:20px 0;">
+      <div style="font-size:3rem;margin-bottom:16px;">📧</div>
+      <h2 style="font-size:1.3rem;margin-bottom:12px;">E-Mail gesendet!</h2>
+      <p style="color:var(--muted);font-size:.88rem;margin-bottom:24px;line-height:1.6;">
+        Wir haben einen Link an <strong style="color:var(--text)">${email}</strong> geschickt.<br>
+        Klick auf den Link um dein Passwort zurückzusetzen.
+      </p>
+      <p style="color:var(--muted);font-size:.78rem;margin-bottom:20px;">Nicht gefunden? Schau im Spam-Ordner nach!</p>
+      <button class="full-btn" onclick="closeForgotModal()" style="background:var(--bg3);border:1px solid var(--border);color:var(--text);">← Zurück zum Login</button>
+    </div>
+  `;
+}
+
 function cancelSubscription() {
   if (confirm('Möchtest du dein Abo wirklich kündigen? Du wirst zu Stripe weitergeleitet.')) {
     window.open('https://billing.stripe.com/p/login/8x2fZhaHm6XvahzgZHaVa00', '_blank');
@@ -2256,6 +2323,12 @@ const translations = {
     loginPassLabel: 'Passwort',
     loginBtn: 'Einloggen →',
     loginSwitch: 'Neu hier? Konto erstellen',
+    forgotBtn: 'Passwort vergessen?',
+    forgotTitle: 'Passwort vergessen?',
+    forgotSubtitle: 'Gib deine E-Mail ein – du bekommst einen Link zum Zurücksetzen.',
+    forgotEmailLabel: 'E-Mail',
+    forgotBtn2: 'Link senden →',
+    backToLogin: '← Zurück zum Login',
     // FOOTER
     footerText: '© 2025 TradeIQ · Datenschutz · AGB · Kontakt',
     // BIO
@@ -2320,6 +2393,12 @@ const translations = {
     loginPassLabel: 'Password',
     loginBtn: 'Login →',
     loginSwitch: 'New here? Create account',
+    forgotBtn: 'Forgot password?',
+    forgotTitle: 'Forgot your password?',
+    forgotSubtitle: 'Enter your email – we\'ll send you a reset link.',
+    forgotEmailLabel: 'Email',
+    forgotBtn2: 'Send link →',
+    backToLogin: '← Back to login',
     footerText: '© 2025 TradeIQ · Privacy · Terms · Contact',
     // BIO
     bioTag: '✦ Founder & Creator',
@@ -2393,6 +2472,13 @@ function applyTranslations() {
   st('loginPassLabel', t.loginPassLabel);
   st('loginBtn', t.loginBtn);
   st('loginSwitch', t.loginSwitch);
+  // Forgot password
+  const forgotBtnEl = document.querySelector('#loginModal .full-btn-primary + .modal-divider + .full-btn + button, #loginModal button[onclick="showForgotPassword()"]');
+  st('forgotTitle', t.forgotTitle);
+  st('forgotSubtitle', t.forgotSubtitle);
+  st('forgotEmailLabel', t.forgotEmailLabel);
+  st('forgotBtn2', t.forgotBtn2);
+  st('backToLogin', t.backToLogin);
   // Footer
   st('footerText', t.footerText);
   // Bio
